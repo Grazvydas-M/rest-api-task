@@ -1,3 +1,6 @@
+volumes:
+  mysql-data:
+
 services:
   php:
     build:
@@ -23,6 +26,8 @@ services:
   database:
     image: mysql:8.0
     container_name: symfony_db
+    volumes:
+      - mysql-data:/var/lib/mysql:delegated
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: symfony

@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Dto\UserRegisterDto;
+use App\Entity\User;
 use App\Repository\UserRepository;
 use App\Service\UserService;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -39,7 +40,7 @@ class UserController extends AbstractController
 
         $user = $this->userService->createUser($userDto);
 
-        return new JsonResponse($this->serializer->serialize($user, 'json'), Response::HTTP_CREATED, [], true);
+        return $this->jsonSerialized($user, Response::HTTP_CREATED);
     }
 
     #[Route('/users', name: 'users_list', methods: ['GET'])]
@@ -47,7 +48,13 @@ class UserController extends AbstractController
     {
         $users = $this->userRepository->findAll();
 
-        return new JsonResponse($this->serializer->serialize($users, 'json'), 200, [], true);
+        return $this->jsonSerialized($users, Response::HTTP_OK);
+    }
+
+    #[Route('/users/{id}', name: 'user_show', methods: ['GET'])]
+    public function show(User $user): JsonResponse
+    {
+        return $this->jsonSerialized($user, Response::HTTP_OK);
     }
 
     private function formatValidationErrors($errors): array
@@ -73,5 +80,15 @@ class UserController extends AbstractController
         $userDto->setPhoto($request->files->get('photo'));
 
         return $userDto;
+    }
+
+    private function jsonSerialized(mixed $data, int $status = 200): JsonResponse
+    {
+        return new JsonResponse(
+            $this->serializer->serialize($data, 'json'),
+            $status,
+            [],
+            true
+        );
     }
 }

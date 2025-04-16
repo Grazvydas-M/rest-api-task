@@ -24,7 +24,7 @@ class UserRegisterDto
 
     #[Assert\NotBlank]
     #[Assert\Type("numeric")]
-    public $position_id;
+    public int|string $position_id;
 
     #[Assert\NotNull]
     #[Assert\File(
