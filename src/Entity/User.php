@@ -22,8 +22,8 @@ class User
     #[ORM\Column(length: 255)]
     private ?string $phone = null;
 
-    #[ORM\Column]
-    private ?int $position_id = null;
+    #[ORM\ManyToOne(targetEntity: Position::class)]
+    private ?Position $position = null;
 
     #[ORM\Column(length: 255)]
     private ?string $photo = null;
@@ -38,7 +38,7 @@ class User
         return $this->name;
     }
 
-    public function setName(string $name): static
+    public function setName(string $name): User
     {
         $this->name = $name;
 
@@ -50,7 +50,7 @@ class User
         return $this->email;
     }
 
-    public function setEmail(string $email): static
+    public function setEmail(string $email): User
     {
         $this->email = $email;
 
@@ -62,21 +62,21 @@ class User
         return $this->phone;
     }
 
-    public function setPhone(string $phone): static
+    public function setPhone(string $phone): User
     {
         $this->phone = $phone;
 
         return $this;
     }
 
-    public function getPositionId(): ?int
+    public function getPosition(): ?Position
     {
-        return $this->position_id;
+        return $this->position;
     }
 
-    public function setPositionId(int $position_id): static
+    public function setPosition(Position $position): User
     {
-        $this->position_id = $position_id;
+        $this->position = $position;
 
         return $this;
     }
@@ -86,7 +86,7 @@ class User
         return $this->photo;
     }
 
-    public function setPhoto(string $photo): static
+    public function setPhoto(string $photo): User
     {
         $this->photo = $photo;
 

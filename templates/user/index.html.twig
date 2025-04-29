@@ -1,0 +1,38 @@
+<h1>User List</h1>
+
+<ul id="user-list">
+    {% include 'user/_user_list.html.twig' with {'users': users} %}
+</ul>
+
+{% if hasMore %}
+    <button id="load-more" data-page="{{ page + 1 }}">Show more</button>
+{% endif %}
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const loadMoreBtn = document.getElementById('load-more');
+
+        if (loadMoreBtn) {
+            loadMoreBtn.addEventListener('click', async () => {
+                const page = loadMoreBtn.dataset.page;
+
+                const response = await fetch(`/user/${page}`, {
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                });
+
+                if (response.ok) {
+                    const html = await response.text();
+                    document.getElementById('user-list').insertAdjacentHTML('beforeend', html);
+
+                    loadMoreBtn.dataset.page = parseInt(page) + 1;
+
+                    if (html.trim() === '') {
+                        loadMoreBtn.remove();
+                    }
+                }
+            });
+        }
+    });
+</script>

@@ -17,14 +17,14 @@ class UserRegisterDto
 
     #[Assert\NotBlank]
     #[Assert\Regex(
-        pattern: '/^\+380\d{9}$/',
-        message: 'Phone number must start with +380 and contain 9 digits after that.'
+        pattern: '/^\+3706\d{7}$/',
+        message: 'Phone number must start with +3706 and contain 7 digits after that.'
     )]
     public string $phone;
 
     #[Assert\NotBlank]
     #[Assert\Type("numeric")]
-    public int|string $position_id;
+    public int|string $positionId;
 
     #[Assert\NotNull]
     #[Assert\File(
@@ -50,9 +50,9 @@ class UserRegisterDto
         return $this->phone;
     }
 
-    public function getPositionId()
+    public function getPositionId(): int|string
     {
-        return $this->position_id;
+        return $this->positionId;
     }
 
     public function getPhoto(): UploadedFile
@@ -65,9 +65,9 @@ class UserRegisterDto
         $this->photo = $photo;
     }
 
-    public function setPositionId($position_id): void
+    public function setPositionId($positionId): void
     {
-        $this->position_id = $position_id;
+        $this->positionId = $positionId;
     }
 
 

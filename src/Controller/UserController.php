@@ -1,94 +1,41 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Controller;
 
-use App\Dto\UserRegisterDto;
-use App\Entity\User;
 use App\Repository\UserRepository;
-use App\Service\UserService;
-use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Attribute\Route;
-use Symfony\Component\Serializer\SerializerInterface;
-use Symfony\Component\Validator\ConstraintViolationInterface;
-use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class UserController extends AbstractController
 {
-    public function __construct(
-        private readonly SerializerInterface $serializer,
-        private readonly ValidatorInterface  $validator,
-        private readonly UserRepository      $userRepository,
-        private readonly UserService         $userService
-    )
+    public function __construct(private readonly UserRepository $userRepository)
     {
     }
 
-    #[Route('/users', name: 'users_create', methods: ['POST'])]
-    public function create(Request $request): JsonResponse
+    #[Route('/user/{page}', name: 'user_index', requirements: ['page' => '\d+'], defaults: ['page' => 1])]
+    public function index(Request $request, int $page): Response
     {
-        $userDto = $this->createUserDtoFromRequest($request);
-        $errors = $this->validator->validate($userDto);
+        $limit = 6;
+        $offset = ($page - 1) * $limit;
 
-        if (count($errors) > 0) {
-            $formattedErrors = $this->formatValidationErrors($errors);
+        $users = $this->userRepository->findBy([], null, $limit, $offset);
+        $totalUsers = count($this->userRepository->findAll());
+        $hasMore = ($page * $limit) < $totalUsers;
 
-            return new JsonResponse(['errors' => $formattedErrors], 400);
+        if ($request->isXmlHttpRequest()) {
+            return $this->render('user/_user_list.html.twig', [
+                'users' => $users,
+            ]);
         }
 
-        $user = $this->userService->createUser($userDto);
-
-        return $this->jsonSerialized($user, Response::HTTP_CREATED);
-    }
-
-    #[Route('/users', name: 'users_list', methods: ['GET'])]
-    public function list(): JsonResponse
-    {
-        $users = $this->userRepository->findAll();
-
-        return $this->jsonSerialized($users, Response::HTTP_OK);
-    }
-
-    #[Route('/users/{id}', name: 'user_show', methods: ['GET'])]
-    public function show(User $user): JsonResponse
-    {
-        return $this->jsonSerialized($user, Response::HTTP_OK);
-    }
-
-    private function formatValidationErrors($errors): array
-    {
-        $formattedErrors = [];
-
-        foreach ($errors as $error) {
-            /** @var ConstraintViolationInterface $error */
-            $formattedErrors[] = [
-                'field' => $error->getPropertyPath(),
-                'message' => $error->getMessage(),
-            ];
-        }
-
-        return $formattedErrors;
-    }
-
-    private function createUserDtoFromRequest(Request $request): UserRegisterDto
-    {
-        $rawData = $request->request->all();
-        /** @var UserRegisterDto $userDto */
-        $userDto = $this->serializer->deserialize(json_encode($rawData), UserRegisterDto::class, 'json');
-        $userDto->setPhoto($request->files->get('photo'));
-
-        return $userDto;
-    }
-
-    private function jsonSerialized(mixed $data, int $status = 200): JsonResponse
-    {
-        return new JsonResponse(
-            $this->serializer->serialize($data, 'json'),
-            $status,
-            [],
-            true
-        );
+        return $this->render('user/index.html.twig', [
+            'users' => $users,
+            'page' => $page,
+            'hasMore' => $hasMore,
+        ]);
     }
 }
