@@ -2,25 +2,31 @@
 
 namespace App\Service;
 
+use Exception;
 use Imagine\Gd\Imagine;
 use Imagine\Image\Box;
 use Imagine\Image\Point;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
 use function Tinify\fromFile;
 use function Tinify\setKey;
 
 class ImageService
 {
-    public function cropAndOptimizeImage(UploadedFile $file): string
+    private string $publicDir = __DIR__ . '/../../public';
+    public function cropAndOptimizeImage(string $relativePath): string
     {
         $imagine = new Imagine();
 
-        $uploadDir = __DIR__ . '/../../public/uploads/';
+        $uploadDir = rtrim($this->publicDir . '/uploads', '/');
         if (!is_dir($uploadDir)) {
             mkdir($uploadDir, 0777, true);
         }
 
-        $image = $imagine->open($file->getRealPath());
+        $fullPath = $this->publicDir . $relativePath;
+        if (!file_exists($fullPath)) {
+            throw new \RuntimeException("Image not found at path: $relativePath");
+        }
+
+        $image = $imagine->open($fullPath);
 
         $size = $image->getSize();
         $width = $size->getWidth();
@@ -29,13 +35,13 @@ class ImageService
         $startY = max(0, intval(($height - 70) / 2));
 
         $cropped = $image->crop(new Point($startX, $startY), new Box(70, 70));
-        $fileName = uniqid() . '.jpg';
+        $fileName = 'user' . uniqid() . '.jpg';
         $filePath = $uploadDir . '/' . $fileName;
         $cropped->save($filePath, ['jpeg_quality' => 85]);
 
         $this->optimizeImageWithTinyPng($filePath);
 
-        return str_replace(__DIR__ . '/../../public', '', $filePath);
+        return '/uploads/' . $fileName;
     }
 
     private function optimizeImageWithTinyPng(string $filePath): void
@@ -45,6 +51,6 @@ class ImageService
 
             $source = fromFile($filePath);
             $source->toFile($filePath);
-        } catch (\Tinify\Exception $exception) {}
+        } catch (Exception $exception) {}
     }
 }

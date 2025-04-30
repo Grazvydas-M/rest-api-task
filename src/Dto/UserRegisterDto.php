@@ -26,14 +26,9 @@ class UserRegisterDto
     #[Assert\Type("numeric")]
     public int|string $positionId;
 
-    #[Assert\NotNull]
-    #[Assert\File(
-        maxSize: "5M",
-        mimeTypes: ["image/jpeg", "image/jpg"],
-        maxSizeMessage: "Photo size must not exceed 5MB.",
-        mimeTypesMessage: "Please upload a valid JPEG image."
-    )]
-    public ?UploadedFile $photo = null;
+    #[Assert\NotBlank]
+    #[Assert\Length(max: 255)]
+    public ?string $photo = null;
 
     public function getName(): string
     {
@@ -55,12 +50,12 @@ class UserRegisterDto
         return $this->positionId;
     }
 
-    public function getPhoto(): UploadedFile
+    public function getPhoto(): ?string
     {
         return $this->photo;
     }
 
-    public function setPhoto(?UploadedFile $photo): void
+    public function setPhoto(?string $photo): void
     {
         $this->photo = $photo;
     }

@@ -74,10 +74,8 @@ class ApiUserController extends AbstractController
 
     private function createUserDtoFromRequest(Request $request): UserRegisterDto
     {
-        $rawData = $request->request->all();
         /** @var UserRegisterDto $userDto */
-        $userDto = $this->serializer->deserialize(json_encode($rawData), UserRegisterDto::class, 'json');
-        $userDto->setPhoto($request->files->get('photo'));
+        $userDto = $this->serializer->deserialize($request->getContent(), UserRegisterDto::class, 'json');
 
         return $userDto;
     }
