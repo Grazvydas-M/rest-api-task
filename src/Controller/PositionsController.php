@@ -20,7 +20,7 @@ class PositionsController extends AbstractController
     {
     }
 
-    #[Route('/positions', name: 'positions_list', methods: ['GET'])]
+    #[Route('/api/positions', name: 'positions_list', methods: ['GET'])]
     public function list(): JsonResponse
     {
         $positions = $this->positionRepository->findAll();

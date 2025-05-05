@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create User Form</title>
+</head>
+<body>
+<h1>Create New User</h1>
+
+<form id="user-form">
+    <label for="name">Name</label>
+    <input type="text" name="name" id="name" required>
+
+    <label for="email">Email</label>
+    <input type="email" name="email" id="email" required>
+
+    <label for="phone">Phone</label>
+    <input type="text" name="phone" id="phone" required>
+
+    <label for="position">Position</label>
+    <select name="position_id" id="position_id" required>
+    </select>
+
+    <label for="photo">Photo</label>
+    <input type="file" name="photo" id="photo" accept="image/*" required>
+
+    <div id="response-message"></div>
+
+    <button type="submit">Create User</button>
+</form>
+
+<script>
+    document.addEventListener('DOMContentLoaded', async function () {
+        try {
+            const response = await fetch('/api/positions');
+            if (response.ok) {
+                const positions = await response.json();
+                const positionSelect = document.getElementById('position_id');
+                positions.forEach(position => {
+                    const option = document.createElement('option');
+                    option.value = position.id;
+                    option.textContent = position.name;
+                    positionSelect.appendChild(option);
+                });
+            } else {
+                console.error('Failed to load positions');
+            }
+        } catch (error) {
+            console.error('Error loading positions:', error);
+        }
+    });
+
+    document.getElementById('user-form').addEventListener('submit', function (event) {
+        event.preventDefault();
+
+        const form = event.target;
+        const formData = new FormData(form);
+        const messageBox = document.getElementById('response-message');
+        const timeoutDuration = 30 * 1000;
+
+        let timeout;
+
+        const fileInput = form.querySelector('input[name="photo"]');
+        const photoFile = fileInput.files[0];
+
+        const uploadData = new FormData();
+        uploadData.append('file', photoFile);
+
+        const xhr = new XMLHttpRequest();
+        xhr.open('POST', '/api/upload', true);
+
+        timeout = setTimeout(() => {
+            xhr.abort();
+            messageBox.innerHTML = '<span style="color: red;">Upload timed out. Please try again.</span>';
+        }, timeoutDuration);
+
+        xhr.onload = () => {
+            clearTimeout(timeout);
+
+            if (xhr.status === 201) {
+                const response = JSON.parse(xhr.responseText);
+
+                const userData = {
+                    name: formData.get('name'),
+                    email: formData.get('email'),
+                    phone: formData.get('phone'),
+                    position_id: formData.get('position_id'),
+                    photo: response.path,
+                };
+
+                fetch('/api/users', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(userData),
+                })
+                    .then(res => res.json())
+                    .then(data => {
+                        messageBox.innerHTML = '<span style="color: green;">User created successfully!</span>';
+                    })
+                    .catch(error => {
+                        messageBox.innerHTML = `<span style="color: red;">Failed to create user: ${error.message}</span>`;
+                    });
+
+            } else {
+                messageBox.innerHTML = `<span style="color: red;">Upload failed: ${xhr.statusText}</span>`;
+            }
+        };
+
+        xhr.onerror = () => {
+            clearTimeout(timeout);
+            messageBox.innerHTML = '<span style="color: red;">Upload failed due to an error.</span>';
+        };
+
+        xhr.send(uploadData);
+    });
+</script>
+</body>
+</html>

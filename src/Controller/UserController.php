@@ -16,14 +16,14 @@ class UserController extends AbstractController
     {
     }
 
-    #[Route('/user/{page}', name: 'user_index', requirements: ['page' => '\d+'], defaults: ['page' => 1])]
+    #[Route('/users/{page}', name: 'user_index', requirements: ['page' => '\d+'], defaults: ['page' => 1])]
     public function index(Request $request, int $page): Response
     {
         $limit = 6;
         $offset = ($page - 1) * $limit;
 
         $users = $this->userRepository->findBy([], null, $limit, $offset);
-        $totalUsers = count($this->userRepository->findAll());
+        $totalUsers = $this->userRepository->count();
         $hasMore = ($page * $limit) < $totalUsers;
 
         if ($request->isXmlHttpRequest()) {
@@ -37,5 +37,11 @@ class UserController extends AbstractController
             'page' => $page,
             'hasMore' => $hasMore,
         ]);
+    }
+
+    #[Route('/users/create', name: 'user_create', methods: ['GET'])]
+    public function create(): Response
+    {
+        return $this->render('user/create.html.twig');
     }
 }

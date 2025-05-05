@@ -1,4 +1,4 @@
-<h1>User List</h1>
+<h1>Users List</h1>
 
 <ul id="user-list">
     {% include 'user/_user_list.html.twig' with {'users': users} %}
@@ -16,7 +16,7 @@
             loadMoreBtn.addEventListener('click', async () => {
                 const page = loadMoreBtn.dataset.page;
 
-                const response = await fetch(`/user/${page}`, {
+                const response = await fetch(`/users/${page}`, {
                     headers: {
                         'X-Requested-With': 'XMLHttpRequest'
                     }
