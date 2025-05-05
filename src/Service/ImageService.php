@@ -31,10 +31,10 @@ class ImageService
         $size = $image->getSize();
         $width = $size->getWidth();
         $height = $size->getHeight();
-        $startX = max(0, intval(($width - 70) / 2));
-        $startY = max(0, intval(($height - 70) / 2));
+        $startX = max(0, intval(($width - 100) / 2));
+        $startY = max(0, intval(($height - 100) / 2));
 
-        $cropped = $image->crop(new Point($startX, $startY), new Box(70, 70));
+        $cropped = $image->crop(new Point($startX, $startY), new Box(100, 100));
         $fileName = 'user' . uniqid() . '.jpg';
         $filePath = $uploadDir . '/' . $fileName;
         $cropped->save($filePath, ['jpeg_quality' => 85]);

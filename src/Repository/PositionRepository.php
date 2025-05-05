@@ -15,4 +15,11 @@ class PositionRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Position::class);
     }
+
+    public function getPositions()
+    {
+        return $this->createQueryBuilder('p')
+            ->getQuery()
+            ->getResult();
+    }
 }
