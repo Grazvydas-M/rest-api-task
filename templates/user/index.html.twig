@@ -1,10 +1,10 @@
 <h1>Users List</h1>
 
 <ul id="user-list">
-    {% include 'user/_user_list.html.twig' with {'users': users} %}
+    {% include 'user/_user_list.html.twig' with {'users': pagination.users} %}
 </ul>
 
-{% if hasMore %}
+{% if pagination.hasMore %}
     <button id="load-more" data-page="{{ page + 1 }}">Show more</button>
 {% endif %}
 

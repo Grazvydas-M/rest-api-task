@@ -2,6 +2,7 @@
 
 namespace App\Service;
 
+use App\Dto\Pagination;
 use App\Dto\UserRegisterDto;
 use App\Entity\Position;
 use App\Entity\User;
@@ -31,9 +32,21 @@ readonly class UserService
             ->setPhoto($photo)
             ->setPosition($position);
 
-        $this->userRepository->save($user);
+        $this->userRepository->save($user, true);
 
         return $user;
+    }
+
+    public function getPagination(int $page): Pagination
+    {
+        $limit = 6;
+        $offset = ($page - 1) * $limit;
+
+        $users = $this->userRepository->findBy([], null, $limit, $offset);
+        $totalUsers = $this->userRepository->count();
+        $hasMore = ($page * $limit) < $totalUsers;
+
+        return new Pagination($users, $hasMore);
     }
 
     private function getPositionOrFail(int $positionId): Position

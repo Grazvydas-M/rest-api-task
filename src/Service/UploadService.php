@@ -8,7 +8,7 @@ use Symfony\Component\HttpKernel\Exception\UnsupportedMediaTypeHttpException;
 
 class UploadService
 {
-    private const ALLOWED_MIME_TYPES = ['image/jpeg', 'image/jpg'];
+    private const array ALLOWED_MIME_TYPES = ['image/jpeg', 'image/jpg'];
 
     public function __construct(private readonly FilesystemOperator $uploadsStorage)
     {
