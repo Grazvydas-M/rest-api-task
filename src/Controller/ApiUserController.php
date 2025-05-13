@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Dto\UserRegisterDto;
 use App\Entity\User;
+use App\Exception\PositionNotFoundException;
 use App\Repository\UserRepository;
 use App\Service\UserService;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -26,6 +27,9 @@ class ApiUserController extends AbstractController
     {
     }
 
+    /**
+     * @throws PositionNotFoundException
+     */
     #[Route('/api/users', name: 'api_users_create', methods: ['POST'])]
     public function create(Request $request): JsonResponse
     {

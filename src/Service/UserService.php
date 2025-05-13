@@ -6,9 +6,9 @@ use App\Dto\Pagination;
 use App\Dto\UserRegisterDto;
 use App\Entity\Position;
 use App\Entity\User;
+use App\Exception\PositionNotFoundException;
 use App\Repository\PositionRepository;
 use App\Repository\UserRepository;
-use http\Exception\InvalidArgumentException;
 
 readonly class UserService
 {
@@ -20,6 +20,9 @@ readonly class UserService
     {
     }
 
+    /**
+     * @throws PositionNotFoundException
+     */
     public function createUser(UserRegisterDto $userDto): User
     {
         $photo = $this->imageService->cropAndOptimizeImage($userDto->getPhoto());
@@ -49,12 +52,15 @@ readonly class UserService
         return new Pagination($users, $hasMore);
     }
 
+    /**
+     * @throws PositionNotFoundException
+     */
     private function getPositionOrFail(int $positionId): Position
     {
         $position = $this->positionRepository->find($positionId);
 
         if (!$position) {
-            throw new InvalidArgumentException('Position with id ' . $positionId . ' not found');
+            throw new PositionNotFoundException('Position with id ' . $positionId . ' not found');
         }
 
         return $position;

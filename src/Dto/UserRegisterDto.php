@@ -8,26 +8,41 @@ class UserRegisterDto
 {
     #[Assert\NotBlank]
     #[Assert\Length(min: 2, max: 60)]
-    public string $name;
+    private string $name;
 
     #[Assert\NotBlank]
     #[Assert\Email]
-    public string $email;
+    private string $email;
 
     #[Assert\NotBlank]
     #[Assert\Regex(
         pattern: '/^\+3706\d{7}$/',
         message: 'Phone number must start with +3706 and contain 7 digits after that.'
     )]
-    public string $phone;
+    private string $phone;
 
     #[Assert\NotBlank]
     #[Assert\Type("numeric")]
-    public int|string $positionId;
+    private int|string $positionId;
 
     #[Assert\NotBlank]
     #[Assert\Length(max: 255)]
-    public ?string $photo = null;
+    private ?string $photo = null;
+
+    public function __construct(
+        string $name,
+        string $email,
+        string $phone,
+        int $positionId,
+        ?string $photo = null
+    )
+    {
+        $this->name = $name;
+        $this->email = $email;
+        $this->phone = $phone;
+        $this->positionId = $positionId;
+        $this->photo = $photo;
+    }
 
     public function getName(): string
     {
