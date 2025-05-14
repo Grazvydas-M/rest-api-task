@@ -16,8 +16,7 @@ readonly class UserService
         private UserRepository $userRepository,
         private ImageService $imageService,
         private PositionRepository $positionRepository,
-    )
-    {
+    ) {
     }
 
     /**

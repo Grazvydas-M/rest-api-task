@@ -20,7 +20,7 @@ class UserController extends AbstractController
     #[Route('/users/{page}', name: 'user_index', requirements: ['page' => '\d+'], defaults: ['page' => 1])]
     public function index(Request $request, int $page): Response
     {
-       $pagination = $this->userService->getPagination($page);
+        $pagination = $this->userService->getPagination($page);
 
         if ($request->isXmlHttpRequest()) {
             return $this->render('user/_user_list.html.twig', [

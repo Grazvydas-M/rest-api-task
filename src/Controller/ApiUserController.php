@@ -14,17 +14,17 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Validator\ConstraintViolationInterface;
+use Symfony\Component\Validator\ConstraintViolationListInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class ApiUserController extends AbstractController
 {
     public function __construct(
         private readonly SerializerInterface $serializer,
-        private readonly ValidatorInterface  $validator,
-        private readonly UserRepository      $userRepository,
-        private readonly UserService         $userService
-    )
-    {
+        private readonly ValidatorInterface $validator,
+        private readonly UserRepository $userRepository,
+        private readonly UserService $userService
+    ) {
     }
 
     /**
@@ -61,7 +61,10 @@ class ApiUserController extends AbstractController
         return $this->json($user, Response::HTTP_OK);
     }
 
-    private function formatValidationErrors($errors): array
+    /**
+     * @return array<int, array{field: string, message: string}>
+     */
+    private function formatValidationErrors(ConstraintViolationListInterface $errors): array
     {
         $formattedErrors = [];
 
