@@ -15,9 +15,8 @@ class UserFixture extends Fixture
 
     public function __construct(
         private readonly PositionRepository $positionRepository,
-        private readonly UserRepository     $userRepository
-    )
-    {
+        private readonly UserRepository $userRepository
+    ) {
     }
 
     public function load(ObjectManager $manager): void
@@ -38,10 +37,9 @@ class UserFixture extends Fixture
             $user->setPosition($positions[array_rand($positions)]);
 
             $this->userRepository->save($user);
-
         }
 
-        if (isset($user)){
+        if (isset($user)) {
             $this->userRepository->save($user, true);
         }
     }

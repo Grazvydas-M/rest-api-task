@@ -6,12 +6,14 @@ use Exception;
 use Imagine\Gd\Imagine;
 use Imagine\Image\Box;
 use Imagine\Image\Point;
+
 use function Tinify\fromFile;
 use function Tinify\setKey;
 
 class ImageService
 {
     private string $publicDir = __DIR__ . '/../../public';
+
     public function cropAndOptimizeImage(string $relativePath): string
     {
         $imagine = new Imagine();
@@ -51,6 +53,7 @@ class ImageService
 
             $source = fromFile($filePath);
             $source->toFile($filePath);
-        } catch (Exception $exception) {}
+        } catch (Exception $exception) {
+        }
     }
 }

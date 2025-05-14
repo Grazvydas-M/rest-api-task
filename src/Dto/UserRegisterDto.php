@@ -35,8 +35,7 @@ class UserRegisterDto
         string $phone,
         int $positionId,
         ?string $photo = null
-    )
-    {
+    ) {
         $this->name = $name;
         $this->email = $email;
         $this->phone = $phone;
@@ -74,10 +73,8 @@ class UserRegisterDto
         $this->photo = $photo;
     }
 
-    public function setPositionId($positionId): void
+    public function setPositionId(int|string $positionId): void
     {
         $this->positionId = $positionId;
     }
-
-
 }

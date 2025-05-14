@@ -14,10 +14,9 @@ use Symfony\Component\Serializer\SerializerInterface;
 class PositionsController extends AbstractController
 {
     public function __construct(
-        private readonly PositionRepository  $positionRepository,
+        private readonly PositionRepository $positionRepository,
         private readonly SerializerInterface $serializer,
-    )
-    {
+    ) {
     }
 
     #[Route('/api/positions', name: 'positions_list', methods: ['GET'])]

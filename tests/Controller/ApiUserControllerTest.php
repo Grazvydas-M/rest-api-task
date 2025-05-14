@@ -64,8 +64,6 @@ class ApiUserControllerTest extends WebTestCase
         /** @var User $user */
         $user = static::getContainer()->get('doctrine')->getRepository(User::class)->findOneBy(['name' => 'Fixture User']);
 
-        $this->assertNotNull($user);
-
         $this->client->request('GET', '/api/users/' . $user->getId());
 
         $this->assertResponseStatusCodeSame(Response::HTTP_OK);
