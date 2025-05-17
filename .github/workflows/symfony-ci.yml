@@ -49,3 +49,6 @@ jobs:
         run: php bin/phpunit
         env:
           DATABASE_URL: "mysql://root:root@127.0.0.1:3306/symfony"
+
+      - name: Run PHPStan
+        run: php bin/phpstan
