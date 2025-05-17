@@ -1,0 +1,8 @@
+name: Symfony CI/CD
+
+on: [push]
+
+jobs:
+  build:
+    name: Run Symfony Tests
+    runs-on: ubuntu-latest
