@@ -6,3 +6,7 @@ jobs:
   build:
     name: Run Symfony Tests
     runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
