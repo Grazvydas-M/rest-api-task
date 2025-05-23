@@ -39,8 +39,6 @@ class UserFixture extends Fixture
             $this->userRepository->save($user);
         }
 
-        if (isset($user)) {
-            $this->userRepository->save($user, true);
-        }
+        $this->userRepository->save($user, true);
     }
 }
