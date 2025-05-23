@@ -18,14 +18,6 @@ class Position
     #[ORM\Column(length: 255)]
     private ?string $name = null;
 
-//    #[ORM\OneToMany(targetEntity: User::class, mappedBy: 'position')]
-//    private Collection $users;
-//
-//    public function __construct()
-//    {
-//        $this->users = new ArrayCollection();
-//    }
-
     public function getId(): ?int
     {
         return $this->id;
@@ -42,9 +34,4 @@ class Position
 
         return $this;
     }
-
-//    public function getUsers(): Collection
-//    {
-//        return $this->users;
-//    }
 }
